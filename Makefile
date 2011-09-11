@@ -1,5 +1,5 @@
 HSC=ghc
-HSCFLAGS=-Wall
+HSCFLAGS=-O2 -Wall -package parsec-2.1.0.1
 HSC2HS=hsc2hs
 GTAGS=../global/gtags/gtags
 
@@ -25,7 +25,12 @@ gtagsjs.c: parser.h Gtagsjs_stub.h
 	$(HSC2HS) $<
 
 clean:
-	$(RM) *.{hi,o} main gtagsjs.so *_stub.{h,c} *~
+	find -name '*.hi' | xargs $(RM)
+	find -name '*.o' | xargs $(RM)
+	find -name '*~' | xargs $(RM)
+	find -name '*_stub.h' | xargs $(RM)
+	find -name '*_stub.c' | xargs $(RM)
+	$(RM) main gtagsjs.so Gtags/Internal.hs Gtags/ParserParam.hs
 
 depend: Gtagsjs.hs
 	$(HSC) -M Gtagsjs.hs

@@ -1,7 +1,5 @@
 module Gtagsjs (runParser) where
 
-import Control.Monad
-
 import Foreign
 
 import Gtags
@@ -11,6 +9,6 @@ import System.IO
 
 runParser :: Ptr ParserParam -> IO ()
 runParser p = runGtags Gtags.JavaScript.parser p
-              `catch` \err -> hPrint stderr (show err)
+              `catch` (hPrint stderr . show)
   
 foreign export ccall "gtagsjs_parser" runParser :: Ptr ParserParam -> IO ()
