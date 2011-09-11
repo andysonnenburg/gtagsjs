@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable, StandaloneDeriving #-}
+{-# LANGUAGE DeriveDataTypeable, StandaloneDeriving, TemplateHaskell #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Gtags.JavaScript
        ( parser
@@ -14,6 +14,8 @@ import Data.Generics
 import Gtags
 import Gtags.Instances ()
 
+import Language.Haskell.TH
+
 import Text.ParserCombinators.Parsec.Pos
 
 deriving instance Typeable SourcePos
@@ -21,7 +23,7 @@ deriving instance Typeable SourcePos
 instance Data SourcePos where
   toConstr _ = error "toConstr"
   gunfold _ _ = error "gunfold"
-  dataTypeOf _ = mkNoRepType "Text.ParserCombinators.Parsec.Pos.SourcePos"
+  dataTypeOf _ = mkNoRepType $(litE . stringL . show $ ''SourcePos)
 
 parser :: Gtags ()
 parser = do
