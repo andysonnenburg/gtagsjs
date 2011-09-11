@@ -32,10 +32,10 @@ parser = do
       warning . show $ err
     Right script ->
       let lineArr = listArray (1, length contents) (lines contents)
-      in runReaderT (q script) lineArr
+      in runReaderT (everything (>>) q script) lineArr
   where
-    q = everything (>>) $
-        return () `mkQ`
+    q :: GenericQ (ReaderT (Array Int String) Gtags ())
+    q = return () `mkQ`
         expr `extQ`
         stmt `extQ`
         catchClause `extQ`
@@ -48,6 +48,8 @@ parser = do
       putId RefSym x
     expr (DotRef _ _ x) =
       putId RefSym x
+    expr (AssignExpr _ OpAssign (LDot p _ s) _) =
+      put' Def p s
     expr (FuncExpr _ name args _) = do
       maybe (return ()) (putId Def) name
       mapM_ (putId Def) args
