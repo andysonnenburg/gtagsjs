@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable, StandaloneDeriving #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Gtags.JavaScript
        ( parser
        ) where
@@ -26,20 +27,23 @@ parser :: Gtags ()
 parser = do
   file <- getFile
   contents <- getFileContents
-  let lineArr = listArray (1, length contents) (lines contents)
   case parseScriptFromString file contents of
     Left err ->
       warning . show $ err
     Right script ->
-      runReaderT (everything (>>) (return () `mkQ`
-                                   expr `extQ`
-                                   stmt `extQ`
-                                   catchClause `extQ`
-                                   varDecl `extQ`
-                                   prop `extQ`
-                                   forInInit `extQ`
-                                   lValue) script) lineArr
+      let lineArr = listArray (1, length contents) (lines contents)
+      in runReaderT (q script) lineArr
   where
+    q = everything (>>) $
+        return () `mkQ`
+        expr `extQ`
+        stmt `extQ`
+        catchClause `extQ`
+        varDecl `extQ`
+        prop `extQ`
+        forInInit `extQ`
+        lValue
+    
     expr (VarRef _ x) =
       putId RefSym x
     expr (DotRef _ _ x) =

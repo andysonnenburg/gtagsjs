@@ -31,6 +31,7 @@ clean:
 	find -name '*_stub.h' | xargs $(RM)
 	find -name '*_stub.c' | xargs $(RM)
 	$(RM) main gtagsjs.so Gtags/Internal.hs Gtags/ParserParam.hs
+	$(RM) G{PATH,RTAGS,TAGS}
 
 depend: Gtagsjs.hs
 	$(HSC) -M Gtagsjs.hs

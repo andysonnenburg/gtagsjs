@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Gtags.Instances () where
 
 import Control.Monad.Reader
