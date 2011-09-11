@@ -48,7 +48,11 @@ parser = do
       putId RefSym x
     expr (DotRef _ _ x) =
       putId RefSym x
+    expr (BracketRef _ _ (StringLit p s)) =
+      put' RefSym p s
     expr (AssignExpr _ OpAssign (LDot p _ s) _) =
+      put' Def p s
+    expr (AssignExpr _ OpAssign (LBracket _ _ (StringLit p s)) _) =
       put' Def p s
     expr (FuncExpr _ name args _) = do
       maybe (return ()) (putId Def) name
