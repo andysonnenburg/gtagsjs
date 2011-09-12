@@ -13,11 +13,26 @@ extern void __stginit_Gtagsjs(void);
 #include "parser.h"
 
 void parser(const struct parser_param *);
+void gtagsjs_die(const struct parser_param *, const char *);
+void gtagsjs_warning(const struct parser_param *, const char *);
+void gtagsjs_message(const struct parser_param *, const char *);
 static void gtagsjs_init(void) __attribute__((constructor));
 static void gtagsjs_exit(void) __attribute__((destructor));
 
 void parser(const struct parser_param *param) {
   gtagsjs_parser((HsPtr) param);
+}
+
+void gtagsjs_die(const struct parser_param *param, const char *str) {
+  param->die(str);
+}
+
+void gtagsjs_warning(const struct parser_param *param, const char *str) {
+  param->warning(str);
+}
+
+void gtagsjs_message(const struct parser_param *param, const char *str) {
+  param->message(str);
 }
 
 void gtagsjs_init(void) {

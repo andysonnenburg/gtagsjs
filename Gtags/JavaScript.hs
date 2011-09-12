@@ -21,7 +21,7 @@ deriving instance Typeable SourcePos
 instance Data SourcePos where
   toConstr _ = error "toConstr"
   gunfold _ _ = error "gunfold"
-  dataTypeOf _ = mkNoRepType "Text.Parsec.Pos.SourcePos"
+  dataTypeOf _ = mkNoRepType "Text.ParserCombinators.Parsec.Pos.SourcePos"
 
 parser :: Gtags ()
 parser = do
