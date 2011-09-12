@@ -1,0 +1,3 @@
+#!/bin/sh
+packages='array mtl parsec-2.1.0.1 syb WebBits'
+echo $packages | xargs cabal install --reinstall --ghc-options='-fPIC'

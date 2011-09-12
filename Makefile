@@ -1,12 +1,11 @@
 HSC=ghc
-HSCFLAGS=-O2 -Wall\
+HSCFLAGS=-fPIC -O2 -Wall\
   -hide-all-packages\
   -package array\
   -package base\
   -package mtl\
   -package parsec-2.1.0.1\
   -package syb\
-  -package template-haskell\
   -package WebBits
 HSC2HS=hsc2hs
 GTAGS=../global/gtags/gtags
