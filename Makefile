@@ -1,5 +1,13 @@
 HSC=ghc
-HSCFLAGS=-O2 -Wall -package parsec-2.1.0.1
+HSCFLAGS=-O2 -Wall\
+  -hide-all-packages\
+  -package array\
+  -package base\
+  -package mtl\
+  -package parsec-2.1.0.1\
+  -package syb\
+  -package template-haskell\
+  -package WebBits
 HSC2HS=hsc2hs
 GTAGS=../global/gtags/gtags
 
@@ -10,7 +18,7 @@ all: gtagsjs.so
 test: gtagsjs.so
 	$(GTAGS) --gtagsconf=./gtags.conf --gtagslabel=gtagsjs
 
-valgrind:
+valgrind: Gtagsjs.hs Gtags/ParserParam.hs Gtags/Internal.hs
 	$(HSC) $(HSCFLAGS) --make -c Gtagsjs.hs
 	$(HSC) $(HSCFLAGS) --make -no-hs-main -o main Gtagsjs.hs gtagsjs.c main.c
 	valgrind ./main
@@ -31,7 +39,7 @@ clean:
 	find -name '*_stub.h' | xargs $(RM)
 	find -name '*_stub.c' | xargs $(RM)
 	$(RM) main gtagsjs.so Gtags/Internal.hs Gtags/ParserParam.hs
-	$(RM) G{PATH,RTAGS,TAGS}
+	$(RM) G{PATH,RTAGS}
 
 depend: Gtagsjs.hs
 	$(HSC) -M Gtagsjs.hs

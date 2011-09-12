@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE EmptyDataDecls, ForeignFunctionInterface, RecordWildCards #-}
 module Gtags.ParserParam
        ( ParserParam (..)
        , peekParserParam

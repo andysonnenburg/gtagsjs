@@ -1,3 +1,4 @@
+{-# LANGUAGE ForeignFunctionInterface #-}
 module Gtagsjs (runParser) where
 
 import Foreign
