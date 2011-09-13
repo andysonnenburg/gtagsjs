@@ -4,6 +4,8 @@ cabal-version: >= 1.2
 author: Andy Sonnenburg
 build-type: Custom
 
+extra-source-files: gtags.conf
+
 source-repository head
   type: git
   location: git://github.com/sonyandy/gtagsjs.git

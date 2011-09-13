@@ -14,6 +14,8 @@ main = defaultMainWithHooks simpleUserHooks'
       { preConf = preConf'
       , confHook = confHook'
       , postConf = postConf'
+      , instHook = instHook'
+      , copyHook = copyHook'
       }
     
     preConf' x configFlags =
@@ -28,16 +30,28 @@ main = defaultMainWithHooks simpleUserHooks'
       writeFile "config.h" configH
       where
         configH =
-          "#ifndef CONFIG_H\n" ++
-          "#define CONFIG_H\n" ++
-          "\n" ++
-          "#define GTAGSJS_ROOT " ++ gtagsjsRoot ++ "\n" ++
-          "\n" ++
-          "#endif"
+          concat
+          [ "#ifndef CONFIG_H\n"
+          , "#define CONFIG_H\n"
+          , "\n"
+          , "#define GTAGSJS_ROOT " ++ gtagsjsRoot ++ "\n"
+          , "\n"
+          , "#endif"
+          ]
         gtagsjsRoot =
-          "__stginit_" ++
-          zEncode (render . disp . packageId $ packageDescription) ++
-          "_Gtagsjs"
+          concat ["__stginit_", encoded, "_Gtagsjs"]
+          where
+            encoded = zEncode (render . disp . packageId $ packageDescription)
+    
+    instHook' desc x y z =
+      instHook simpleUserHooks desc' x y z
+      where
+        desc' = desc { dataFiles = dataFiles desc ++ ["gtags.conf"] }
+    
+    copyHook' desc x y z =
+      copyHook simpleUserHooks desc x y z
+      where
+        desc' = desc { dataFiles = dataFiles desc ++ ["gtags.conf"] }
 
 zEncode :: String -> String
 zEncode = concatMap encodeChar
