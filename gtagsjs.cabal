@@ -1,0 +1,19 @@
+name: gtagsjs
+version: 0.1
+build-type: Simple
+cabal-version: >= 1.2
+library
+  exposed-modules: Gtagsjs
+                   Gtags
+                   Gtags.Class
+                   Gtags.Instances
+                   Gtags.Internal
+                   Gtags.JavaScript
+                   Gtags.ParserParam
+  c-sources: gtagsjs.c
+  build-depends: base == 4.*, array, mtl, parsec, syb, WebBits
+  extra-libraries: m rt dl ffi HSrts
+  include-dirs: .
+  ghc-options: -Wall
+  cc-options: -Wall
+  ld-options: -Wall

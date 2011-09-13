@@ -13,8 +13,8 @@ import System.IO
 import Prelude hiding (catch)
 
 runParser :: Ptr ParserParam -> IO ()
-runParser p = runGtags Gtags.JavaScript.parser p
-              `catch` \(e :: SomeException) -> hPrint stderr (show e)
+runParser param = runGtags Gtags.JavaScript.parser param
+                  `catch` \(err :: SomeException) -> hPrint stderr (show err)
   
 foreign export ccall "gtagsjs_parser"
   runParser :: Ptr ParserParam -> IO ()

@@ -6,7 +6,7 @@ module Gtags.Internal
        , Line
        ) where
 
-#include "../parser.h"
+#include "parser.h"
 
 data TagType = Def | RefSym
 type Tag = String

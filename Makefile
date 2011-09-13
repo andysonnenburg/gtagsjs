@@ -1,5 +1,6 @@
-HSC=/usr/local/bin/ghc
-HSCFLAGS=-O2 -Wall\
+HSC=/usr/bin/ghc
+HSCLIB=/usr/lib/ghc-7.0.2
+HSCFLAGS=-package-name gtagsjs-0.1 -O2 -Wall\
   -hide-all-packages\
   -package array\
   -package base\
@@ -26,17 +27,17 @@ valgrind: $(HSSRCS)
 	valgrind ./main
 
 gtagsjs.so: $(HSSRCS)
-	$(HSC) $(HSCFLAGS) --make -no-hs-main -fPIC -shared -static -o $@ $(HSMAIN) $(CSRCS)
+	$(HSC) $(HSCFLAGS) --make -no-hs-main -dynamic -shared -fPIC -o $@ $(HSMAIN) $(CSRCS) -lHSrts -lm -lrt -ldl -lffi -optl-Wl,-rpath,$(HSCLIB)
 
 gtagsjs.c: parser.h Gtagsjs_stub.h
 
 .hsc.hs:
-	$(HSC2HS) $<
+	$(HSC2HS) -I. $<
 
-$(shell touch depends.mk)
-include depends.mk
-depends:
-	gcc $(CSRCS) -M -MG -MF depends.mk
+$(shell touch depend.mk)
+include depend.mk
+depend:
+	$(CC) $(CSRCS) -M -MG -MF depend.mk
 
 clean:
 	find -name '*.hi' | xargs $(RM)
@@ -46,4 +47,3 @@ clean:
 	$(RM) G{PATH,RTAGS}
 
 .PHONY: all test valgrind gtagsjs.so clean
-

@@ -1,0 +1,5 @@
+*_stub.{c,h}
+dist
+*.hi
+*.o
+*~

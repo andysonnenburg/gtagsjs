@@ -4,7 +4,7 @@ module Gtags.ParserParam
        , peekParserParam
        ) where
 
-#include "../parser.h"
+#include "parser.h"
 
 import Control.Monad
 
@@ -34,6 +34,7 @@ type Log = String -> IO ()
 
 type Put' = Int -> CString -> Int -> CString -> CString -> Arg -> IO ()
 type IsNotFunction' = CString -> IO Int
+type Log' = CString -> IO ()
 
 peekParserParam :: Ptr ParserParam -> IO ParserParam
 peekParserParam ptr = do
@@ -44,20 +45,37 @@ peekParserParam ptr = do
   arg <- peekArg ptr
   isNotFunction <- peekIsNotFunction ptr
   langMap <- peekLangMap ptr
-  let die = flip withCString (die' ptr)
-  let warning = flip withCString (warning' ptr)
-  let message = flip withCString (message' ptr)
+  die <- peekDie ptr
+  warning <- peekWarning ptr
+  message <- peekMessage ptr
   return ParserParam {..}
   where
     peekSize = #{peek struct parser_param, size}
+    
     peekFlags = #{peek struct parser_param, flags}
-    peekFile = #{peek struct parser_param, file} >=> peekCAString
+    
+    peekFile = #{peek struct parser_param, file} >=>
+               peekCAString
+    
     peekPut = fmap mkPut . #{peek struct parser_param, put}
+    
     peekArg = #{peek struct parser_param, arg}
+    
     peekIsNotFunction = fmap mkIsNotFunction . peekIsNotFunction'
       where
         peekIsNotFunction' = #{peek struct parser_param, isnotfunction}
-    peekLangMap = #{peek struct parser_param, langmap} >=> peekCAString
+        
+    peekLangMap = #{peek struct parser_param, langmap} >=>
+                  peekCAString
+                  
+    peekDie = fmap (flip withCString . log') .
+              #{peek struct parser_param, die}
+              
+    peekWarning = fmap (flip withCString . log') .
+                  #{peek struct parser_param, warning}
+                  
+    peekMessage = fmap (flip withCString . log') .
+                  #{peek struct parser_param, message}
 
 mkPut :: FunPtr Put' -> Put
 mkPut f tagType tag lineNumber file line args =
@@ -75,11 +93,6 @@ foreign import ccall "dynamic"
 foreign import ccall "dynamic"
   mkIsNotFunction' :: FunPtr IsNotFunction' -> IsNotFunction'
 
-foreign import ccall "gtagsjs_die"
-  die' :: Ptr ParserParam -> CString -> IO ()
+foreign import ccall unsafe "gtagsjs_log"
+  log' :: FunPtr Log' -> CString -> IO ()
 
-foreign import ccall "gtagsjs_warning"
-  warning' :: Ptr ParserParam -> CString -> IO ()
-
-foreign import ccall "gtagsjs_message"
-  message' :: Ptr ParserParam -> CString -> IO ()
