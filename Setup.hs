@@ -2,8 +2,16 @@ module Main (main) where
 
 import Distribution.PackageDescription hiding (Flag)
 import Distribution.Simple
+import Distribution.Simple.BuildPaths
+import Distribution.Simple.LocalBuildInfo
+import Distribution.Simple.Program
 import Distribution.Simple.Setup
 import Distribution.Text
+import qualified Distribution.Verbosity as Verbosity
+
+import System.Directory (removeFile)
+import System.IO.Error (try)
+import System.Process (system)
 
 import Text.PrettyPrint
 
@@ -14,8 +22,7 @@ main = defaultMainWithHooks simpleUserHooks'
       { preConf = preConf'
       , confHook = confHook'
       , postConf = postConf'
-      , instHook = instHook'
-      , copyHook = copyHook'
+      , postClean = postClean'
       }
     
     preConf' x configFlags =
@@ -24,10 +31,10 @@ main = defaultMainWithHooks simpleUserHooks'
     confHook' x configFlags =
       confHook simpleUserHooks x (updateConfigFlags configFlags)
     
-    updateConfigFlags configFlags = configFlags { configSharedLib = Flag True }
-    
-    postConf' _ _ packageDescription _ =
+    postConf' x configFlags desc y = do
       writeFile "config.h" configH
+      let configFlags' = updateConfigFlags configFlags
+      postConf simpleUserHooks x configFlags' desc y
       where
         configH =
           concat
@@ -41,17 +48,12 @@ main = defaultMainWithHooks simpleUserHooks'
         gtagsjsRoot =
           concat ["__stginit_", encoded, "_Gtagsjs"]
           where
-            encoded = zEncode (render . disp . packageId $ packageDescription)
+            encoded = zEncode (render . disp . packageId $ desc)
     
-    instHook' desc x y z =
-      instHook simpleUserHooks desc' x y z
-      where
-        desc' = desc { dataFiles = dataFiles desc ++ ["gtags.conf"] }
+    updateConfigFlags configFlags =
+      configFlags { configSharedLib = Flag True }
     
-    copyHook' desc x y z =
-      copyHook simpleUserHooks desc x y z
-      where
-        desc' = desc { dataFiles = dataFiles desc ++ ["gtags.conf"] }
+    postClean' _ _ _ _ = try . removeFile $ "config.h"
 
 zEncode :: String -> String
 zEncode = concatMap encodeChar
