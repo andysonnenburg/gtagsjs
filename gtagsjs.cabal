@@ -1,7 +1,13 @@
 name: gtagsjs
 version: 0.1
-build-type: Simple
 cabal-version: >= 1.2
+author: Andy Sonnenburg
+build-type: Simple
+
+source-repository head
+  type: git
+  location: git://github.com/sonyandy/gtagsjs.git
+
 library
   exposed-modules: Gtags
                    Gtags.Class
@@ -11,10 +17,17 @@ library
   other-modules: Gtagsjs
                  Gtags.Internal
   c-sources: gtagsjs.c
-  build-depends: base == 4.*, array, containers, mtl, parsec, syb, WebBits
+  build-depends: base == 4.*
+               , array
+               , containers
+               , mtl
+               , parsec
+               , syb
+               , template-haskell
+               , WebBits
   extra-libraries: m rt dl ffi HSrts
   include-dirs: .
   build-tools: hsc2hs
-  ghc-options: -Wall
-  cc-options: -Wall
+  ghc-options: -Wall -O2
+  cc-options: -Wall -O2
   ld-options: -Wall
