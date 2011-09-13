@@ -3,3 +3,5 @@ dist
 *.hi
 *.o
 *~
+config.h
+G{PATH,RTAGS}

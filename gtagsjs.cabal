@@ -2,7 +2,7 @@ name: gtagsjs
 version: 0.1
 cabal-version: >= 1.2
 author: Andy Sonnenburg
-build-type: Simple
+build-type: Custom
 
 source-repository head
   type: git

@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <stdlib.h>
 
 #include "HsFFI.h"
@@ -7,19 +9,12 @@
 #endif
 
 #ifdef __GLASGOW_HASKELL__
-/* extern void __stginit_Gtagsjs(void); */
+extern void GTAGSJS_ROOT(void);
 #endif
 
-#include "parser.h"
-
-void parser(const struct parser_param *);
-void gtagsjs_log(void (*f)(const char *, ...), const char *);
+void gtagsjs_log(void (*)(const char *, ...), const char *);
 static void gtagsjs_init(void) __attribute__((constructor));
 static void gtagsjs_exit(void) __attribute__((destructor));
-
-void parser(const struct parser_param *param) {
-  gtagsjs_parser((HsPtr) param);
-}
 
 void gtagsjs_log(void (*f)(const char *, ...), const char *str) {
   f(str);
@@ -32,7 +27,7 @@ void gtagsjs_init(void) {
   char** argp = argv;
   hs_init(&argc, &argp);
 #ifdef __GLASGOW_HASKELL__
-  /*  hs_add_root(__stginit_Gtagsjs); */
+  hs_add_root(GTAGSJS_ROOT);
 #endif
 }
 

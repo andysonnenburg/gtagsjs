@@ -10,8 +10,6 @@ import Control.Applicative
 import Control.Monad.Reader hiding (ask)
 import qualified Control.Monad.Reader as Reader
 
-import Foreign
-
 import Gtags.Class
 import Gtags.ParserParam hiding (put, isNotFunction, die, warning, message)
 import qualified Gtags.ParserParam as ParserParam
@@ -29,10 +27,8 @@ instance Monad Gtags where
 
 type R = ParserParam
 
-runGtags :: Gtags a -> Ptr ParserParam -> IO a
-runGtags (Gtags m) p = do
-  r <- peekParserParam p
-  runReaderT m r
+runGtags :: Gtags a -> ParserParam -> IO a
+runGtags (Gtags m) = runReaderT m
 
 ask :: Gtags R
 ask = Gtags Reader.ask
