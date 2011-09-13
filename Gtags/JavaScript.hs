@@ -10,6 +10,7 @@ import Control.Monad.Reader
 
 import Data.Array
 import Data.Generics
+import Data.Set (Set)
 
 import Gtags
 import Gtags.Instances ()
@@ -22,6 +23,11 @@ instance Data SourcePos where
   toConstr _ = error "toConstr"
   gunfold _ _ = error "gunfold"
   dataTypeOf _ = mkNoRepType "Text.ParserCombinators.Parsec.Pos.SourcePos"
+
+type Properties = Set String
+
+data Type = AtLeast Properties
+          | Only Properties
 
 parser :: Gtags ()
 parser = do
