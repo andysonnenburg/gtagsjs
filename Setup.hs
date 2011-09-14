@@ -53,7 +53,9 @@ main = defaultMainWithHooks simpleUserHooks'
     updateConfigFlags configFlags =
       configFlags { configSharedLib = Flag True }
     
-    postClean' _ _ _ _ = try . removeFile $ "config.h"
+    postClean' _ _ _ _ = do
+      try . removeFile $ "config.h"
+      return ()
 
 zEncode :: String -> String
 zEncode = concatMap encodeChar
