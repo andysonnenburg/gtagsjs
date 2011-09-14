@@ -4,4 +4,6 @@ dist
 *.o
 *~
 config.h
-G{PATH,RTAGS}
+GPATH
+GRTAGS
+GSYMS
