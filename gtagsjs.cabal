@@ -1,6 +1,6 @@
 name: gtagsjs
 version: 0.1
-cabal-version: >= 1.2
+cabal-version: >= 1.8
 author: Andy Sonnenburg
 build-type: Custom
 
@@ -10,15 +10,34 @@ source-repository head
   type: git
   location: git://github.com/sonyandy/gtagsjs.git
 
+flag plugin
+  description: build plugin
+  default: False
+
+executable gtagsjs
+  main-is: Main.hs
+  build-depends: base == 4.*
+               , gtagsjs
+               , cmdargs
+  ghc-options: -Wall -O2
+
 library
-  exposed-modules: Gtags
-                   Gtags.Class
-                   Gtags.Instances
-                   Gtags.JavaScript
-                   Gtags.ParserParam
-  other-modules: Gtagsjs
-                 Gtags.Internal
-  c-sources: gtagsjs.c
+  hs-source-dirs: src/hs
+
+  if flag(plugin)
+    other-modules: Gtagsjs
+    c-sources: src/c/gtagsjs.c
+               src/c/gtagsjs_plugin.c
+    extra-libraries: m rt dl ffi HSrts
+  else
+    exposed-modules: Gtags
+                     Gtags.Class
+                     Gtags.Instances
+                     Gtags.JavaScript
+                     Gtags.ParserParam
+    other-modules: Gtags.Internal
+    c-sources: src/c/gtagsjs.c
+
   build-depends: base == 4.*
                , array
                , containers
@@ -27,9 +46,7 @@ library
                , syb
                , template-haskell
                , WebBits
-  extra-libraries: m rt dl ffi HSrts
   include-dirs: .
   build-tools: hsc2hs
   ghc-options: -Wall -O2
   cc-options: -Wall -O2
-  ld-options: -Wall
