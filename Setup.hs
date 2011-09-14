@@ -1,5 +1,8 @@
 module Main (main) where
 
+import Data.Set (Set, member)
+import qualified Data.Set as Set
+
 import Distribution.PackageDescription hiding (Flag)
 import Distribution.Simple
 import Distribution.Simple.BuildPaths
@@ -62,6 +65,13 @@ zEncode = concatMap encodeChar
   where
     encodeChar x =
       case x of
+        'z' -> "zz"
+        'Z' -> "ZZ"
+        '(' -> "ZL"
+        ')' -> "ZR"
+        '[' -> "ZM"
+        ']' -> "ZN"
+        ':' -> "ZC"
         '&' -> "za"
         '|' -> "zb"
         '^' -> "zc"
@@ -80,4 +90,10 @@ zEncode = concatMap encodeChar
         '*' -> "zt"
         '_' -> "zu"
         '%' -> "zv"
-        x -> [x]
+        x | x `member` regularLetters -> [x]       
+          | otherwise -> undefined
+    regularLetters = Set.fromList (concat [ ['a'..'y']
+                                          , ['A'..'Y']
+                                          , ['0'..'9']
+                                          ])
+        
