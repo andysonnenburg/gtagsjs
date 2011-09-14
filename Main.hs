@@ -27,10 +27,10 @@ gtagsjs = Gtagsjs { tagType = enum [Def, RefSym]
 main :: IO ()
 main = do
   Gtagsjs {..} <- cmdArgs gtagsjs
-  mapM_ (runGtags Gtags.JavaScript.parser . parserParam tagType) files
+  mapM_ (runGtags Gtags.JavaScript.parser . mkParserParam tagType) files
 
-parserParam :: TagType -> FilePath -> ParserParam
-parserParam tagType' file =
+mkParserParam :: TagType -> FilePath -> ParserParam
+mkParserParam tagType' file =
   ParserParam {..}
   where
     size = undefined
