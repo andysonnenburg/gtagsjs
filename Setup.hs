@@ -16,28 +16,17 @@ import System.Directory (removeFile)
 import System.IO.Error (try)
 import System.Process (system)
 
-import Text.PrettyPrint
-
 main :: IO ()
 main = defaultMainWithHooks simpleUserHooks'
   where
     simpleUserHooks' = simpleUserHooks
-      { preConf = preConf'
-      , confHook = confHook'
-      , postConf = postConf'
+      { postConf = postConf'
       , postClean = postClean'
       }
     
-    preConf' x configFlags =
-      preConf simpleUserHooks x (updateConfigFlags configFlags)
-    
-    confHook' x configFlags =
-      confHook simpleUserHooks x (updateConfigFlags configFlags)
-    
     postConf' x configFlags desc y = do
       writeFile "config.h" configH
-      let configFlags' = updateConfigFlags configFlags
-      postConf simpleUserHooks x configFlags' desc y
+      postConf simpleUserHooks x configFlags desc y
       where
         configH =
           concat
@@ -51,10 +40,7 @@ main = defaultMainWithHooks simpleUserHooks'
         gtagsjsRoot =
           concat ["__stginit_", encoded, "_Gtagsjs"]
           where
-            encoded = zEncode (render . disp . packageId $ desc)
-    
-    updateConfigFlags configFlags =
-      configFlags { configSharedLib = Flag True }
+            encoded = zEncode (show . disp . packageId $ desc)
     
     postClean' _ _ _ _ = do
       try . removeFile $ "config.h"
