@@ -1,0 +1,16 @@
+name: gtagsjs-command
+version: 0.1
+cabal-version: >= 1.2
+author: Andy Sonnenburg
+build-type: Simple
+
+source-repository head
+  type: git
+  location: git://github.com/sonyandy/gtagsjs.git
+
+executable gtagsjs
+  main-is: Main.hs
+  build-depends: base == 4.*
+               , gtags
+               , cmdargs
+  ghc-options: -Wall -O2

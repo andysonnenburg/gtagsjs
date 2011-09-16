@@ -1,0 +1,18 @@
+name: gtagsjs-function
+version: 0.1
+cabal-version: >= 1.8
+author: Andy Sonnenburg
+build-type: Custom
+
+source-repository head
+  type: git
+  location: git://github.com/sonyandy/gtagsjs.git
+
+library
+  other-modules: Gtagsjs
+  c-sources: gtagsjs_function.c
+  extra-libraries: m rt dl ffi HSrts
+  build-depends: base == 4.*
+               , gtags
+  ghc-options: -Wall -O2
+  cc-options: -Wall -O2
